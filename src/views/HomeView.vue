@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h2>{{ appTitle }}</h2>
+    <h2 ref="appTitleRef">{{ appTitle }}</h2>
 
     <div class="section">
       <h3>{{ counterTitle }}</h3>
@@ -29,7 +29,7 @@
 
       <div class="edit">
         <h4>Edit counter title:</h4>
-        <input type="text" v-model="counterData.title" />
+        <input type="text" v-model="counterData.title" v-autofocus />
       </div>
     </div>
 
@@ -40,14 +40,39 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, watch } from 'vue';
+/* Imports */
+import {
+  reactive,
+  ref,
+  computed,
+  watch,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  onBeforeMount,
+  onBeforeUnmount,
+  onActivated,
+  onDeactivated,
+  onUpdated,
+  onBeforeUpdate,
+} from 'vue';
+import { vAutofocus } from '@/directives/vAutofocus.js';
 
+/* App Title */
 const appTitle = 'My Coutner App';
+const appTitleRef = ref(null);
 
+onMounted(() => {
+  console.log('Do stuff related to App Title');
+
+  console.log(`The app title is: ${appTitleRef.value.offsetWidth}px wide.`);
+});
+
+/* Counter */
 const counter = ref(10),
   counterTitle = ref('Counter');
 
-watch(counter);
+watch(counter, () => console.log('counter', counter));
 
 const counterData = reactive({
   count: 0,
@@ -67,8 +92,15 @@ const oddOrEven = computed(() => {
   return 'odd';
 });
 
-function increaseCounter() {
+async function increaseCounter() {
   counter.value++;
+
+  await nextTick(() => {
+    // do something after the dom has updated
+    console.log('do something after the dom has updated - 111');
+  });
+
+  console.log('do something after the dom has updated - 222');
 }
 
 function decreaseCounter() {
@@ -82,6 +114,60 @@ function increaseCounterData(amount) {
 function decreaseCounterData(amount) {
   counterData.count = counterData.count - amount;
 }
+
+onMounted(() => {
+  console.log('Do stuff related to Counter');
+});
+
+/* Directives */
+// const vAutofocus = {
+//   created(el) {
+//     console.log('el', el);
+//   },
+
+//   mounted(el) {
+//     console.log('el', el);
+//     el.focus();
+//   },
+
+//   beforeUnmount(el) {
+//     console.log('el', el);
+//     el.blur();
+//   },
+// };
+
+/* Lifecycle Hooks */
+// onBeforeMount(() => {
+//   console.log('onBeforeMount');
+// });
+
+// onMounted(() => {
+//   console.log('onMounted');
+// });
+
+// onBeforeUnmount(() => {
+//   console.log('onBeforeUnmount');
+// });
+
+// onUnmounted(() => {
+//   console.log('onUnmounted');
+// });
+
+// onBeforeUpdate(() => {
+//   console.log('onBeforeUpdate');
+// });
+
+// onUpdated(() => {
+//   console.log('onUpdated');
+// });
+
+// onActivated(() => {
+//   console.log('onActivated');
+// });
+
+// onDeactivated(() => {
+//   console.log('onDeactivated');
+// });
 </script>
 
 <!-- <script>
@@ -123,6 +209,14 @@ export default {
 
     decreaseCounter() {
       this.counter--;
+    },
+  },
+
+  directives: {
+    autofocus: {
+      mounted(el) {
+        el.focus();
+      },
     },
   },
 };

@@ -3,21 +3,27 @@
     <h2 ref="appTitleRef">{{ appTitle }}</h2>
 
     <div class="section">
-      <h3>{{ counterTitle }}</h3>
+      <h3>{{ counter.title }}</h3>
 
       <div>
-        <button class="btn" @click="decreaseCounter">-</button>
-        <span class="counter">{{ counter }}</span>
-        <button class="btn" @click="increaseCounter">+</button>
+        <button class="btn" @click="counter.decreaseCounter(2)">--</button>
+        <button class="btn" @click="counter.decreaseCounter(1)">-</button>
+        <span class="counter">{{ counter.count }}</span>
+        <button class="btn" @click="counter.increaseCounter(1)">+</button>
+        <button class="btn" @click="counter.increaseCounter(2)">++</button>
       </div>
 
       <div class="edit">
         <h4>Edit counter title:</h4>
-        <input type="text" v-model="counterTitle" />
+        <input type="text" v-autofocus v-model="counter.title" />
       </div>
     </div>
 
     <div class="section">
+      <p>This counter is {{ counter.oddOrEven }}</p>
+    </div>
+
+    <!-- <div class="section">
       <h3>{{ counterData.title }}</h3>
       <div>
         <button class="btn" @click="decreaseCounterData(2)">--</button>
@@ -35,18 +41,14 @@
 
     <div class="section">
       <p>This counter is {{ oddOrEven }}</p>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup>
 /* Imports */
 import {
-  reactive,
   ref,
-  computed,
-  watch,
-  nextTick,
   onMounted,
   onUnmounted,
   onBeforeMount,
@@ -57,6 +59,8 @@ import {
   onBeforeUpdate,
 } from 'vue';
 import { vAutofocus } from '@/directives/vAutofocus.js';
+import { useCounterStore } from '@/stores/counter.js';
+// import { useCounter } from '@/use/useCounter';
 
 /* App Title */
 const appTitle = 'My Coutner App';
@@ -69,55 +73,10 @@ onMounted(() => {
 });
 
 /* Counter */
-const counter = ref(10),
-  counterTitle = ref('Counter');
-
-watch(counter, () => console.log('counter', counter));
-
-const counterData = reactive({
-  count: 0,
-  title: 'My Counter',
-});
-
-watch(
-  () => counterData.count,
-  (newCount, oldCount) => {
-    console.log('newCount', newCount);
-    if (newCount === 20) alert('You reached 20!');
-  }
-);
-
-const oddOrEven = computed(() => {
-  if (counterData.count % 2 === 0) return 'even';
-  return 'odd';
-});
-
-async function increaseCounter() {
-  counter.value++;
-
-  await nextTick(() => {
-    // do something after the dom has updated
-    console.log('do something after the dom has updated - 111');
-  });
-
-  console.log('do something after the dom has updated - 222');
-}
-
-function decreaseCounter() {
-  counter.value--;
-}
-
-function increaseCounterData(amount) {
-  counterData.count = counterData.count + amount;
-}
-
-function decreaseCounterData(amount) {
-  counterData.count = counterData.count - amount;
-}
-
-onMounted(() => {
-  console.log('Do stuff related to Counter');
-});
+// const counter = useCounter();
+// const { counterData, increaseCounterData, decreaseCounterData } = counter;
+const counter = useCounterStore();
+console.log('counter', counter);
 
 /* Directives */
 // const vAutofocus = {

@@ -1,6 +1,6 @@
 <template>
   <teleport to=".modals-container">
-    <div class="modal" v-if="modelValue">
+    <div class="modal-dark" v-if="modelValue">
       <div class="modal-content">
         <h1>{{ title }}</h1>
         <!-- <h1><slot name="title" /></h1> -->
@@ -11,15 +11,13 @@
         </pre> -->
 
         <button @click="$emit('update:modelValue', false)">Hide modal</button>
-
-        <div>Username is: {{ userData.username }}</div>
       </div>
     </div>
   </teleport>
 </template>
 
 <script setup>
-import { useSlots, inject } from 'vue';
+import { useSlots } from 'vue';
 
 const props = defineProps({
   modelValue: {
@@ -32,10 +30,6 @@ const props = defineProps({
     default: 'Default title',
     required: true,
   },
-
-  // userData: {
-  //   type: Object,
-  // },
 });
 console.log('props.title', props.title);
 
@@ -48,10 +42,6 @@ const handleButtonClick = () => {
 
 const slots = useSlots();
 console.log(slots.title());
-
-/* User Data */
-const userData = inject('userData');
-console.log('userData', userData);
 </script>
 
 <!-- <script>
@@ -67,7 +57,7 @@ export default {
 </script> -->
 
 <style>
-.modal {
+.modal-dark {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -79,12 +69,13 @@ export default {
   height: 100vh;
   padding: 10px;
   z-index: 100;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-.modal .modal-content {
+.modal-dark .modal-content {
   width: 350px;
   height: 500px;
-  background-color: beige;
+  background-color: #333;
+  color: #fff;
 }
 </style>
